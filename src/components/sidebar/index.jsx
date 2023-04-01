@@ -4,7 +4,7 @@ import TeamMembers from './TeamMembers'
 
 const index = () => {
   return (
-    <div class="sidebar">
+    <div className="sidebar">
         <ProjectList/>
         <TeamMembers/>
     </div>

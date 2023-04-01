@@ -7,7 +7,7 @@ import Home from './components/pages/Home';
 
 function App() {
   return (
-    <div class="text-[#111827]">
+    <div className="text-[#111827]">
       <Router>
         <NavBar />
         <Routes>

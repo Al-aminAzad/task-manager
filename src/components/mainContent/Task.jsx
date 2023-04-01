@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { imageMapper } from "../../utills/imageMapper";
+// import { imageMapper } from "../../utills/imageMapper";
 
 const Task = ({ task }) => {
   const {
@@ -12,7 +12,7 @@ const Task = ({ task }) => {
     project: { projectName, colorClass },
   } = task;
   const date = new Date(deadline);
-  // const year = date.getFullYear();
+  const year = date.getFullYear();
   const month = date.toLocaleString("default", { month: "long" });
   const day = date.getDate();
 
@@ -25,6 +25,7 @@ const Task = ({ task }) => {
       <div className="flex items-center gap-2 text-slate">
         <h2 className="lws-date">{day}</h2>
         <h4 className="lws-month">{month}</h4>
+        <h4 className="lws-month">{year}</h4>
       </div>
 
       <div className="lws-taskContainer">
@@ -34,7 +35,7 @@ const Task = ({ task }) => {
 
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <img src={imageMapper[avatar]} alt={name} className="team-avater" />
+          <img src={avatar} alt={name} className="team-avater" />
           <p className="lws-task-assignedOn">{name}</p>
         </div>
         {/* <!-- delete button will not shown to the ui, until the status of the task will be completed --> */}

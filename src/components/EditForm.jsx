@@ -1,9 +1,69 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  useEditTaskMutation,
+  useGetTaskQuery,
+} from "../features/tasks/tasksApi";
+import SelectProject from "./SelectProject";
+import SelectAssignee from "./SelectAssignee";
+import Error from "./helperUi/Error";
 
 const EditForm = () => {
+  const { taskId } = useParams();
+  const navigate = useNavigate();
+  const { data: task } = useGetTaskQuery(taskId);
+  const [editTask, { isLoading, isError, isSuccess }] = useEditTaskMutation();
+  const [data, setData] = useState({
+    taskName: "",
+    deadline: "",
+    status: "",
+  });
+  const [teamMember, setTeamMember] = useState({});
+  const [project, setProject] = useState({});
+
+  useEffect(() => {
+    if (task?.id) {
+      const { taskName, deadline, status, teamMember, project } = task;
+      setData({
+        taskName,
+        deadline,
+        status,
+      });
+      setTeamMember(teamMember);
+      setProject(project);
+    }
+  }, [task]);
+  useEffect(() => {
+    if (isSuccess) navigate("/");
+  }, [isSuccess, navigate]);
+  const handleChange = (e) => {
+    const { value, name } = e.target;
+    setData({ ...data, [name]: value });
+  };
+
+  const reset = () => {
+    setData({
+      taskName: "",
+      deadline: "",
+      status: "",
+    });
+    setTeamMember({});
+    setProject({});
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const finalData = {
+      ...data,
+      teamMember,
+      project,
+    };
+    // console.log({...data,teamMember,teamMember})
+    editTask({ id: taskId, data: finalData });
+    reset();
+  };
   return (
     <div className="justify-center mb-10 space-y-2 md:flex md:space-y-0">
-      <form className="space-y-6">
+      <form className="space-y-6" onSubmit={handleSubmit}>
         <div className="fieldContainer">
           <label for="lws-taskName">Task Name</label>
           <input
@@ -12,48 +72,31 @@ const EditForm = () => {
             id="lws-taskName"
             required
             placeholder="Implement RTK Query"
+            value={data.taskName}
+            onChange={handleChange}
           />
         </div>
 
-        <div className="fieldContainer">
-          <label>Assign To</label>
-          <select name="teamMember" id="lws-teamMember" required>
-            <option value="" hidden selected>
-              Select Job
-            </option>
-            <option>Sumit Saha</option>
-            <option>Sadh Hasan</option>
-            <option>Akash Ahmed</option>
-            <option>Md Salahuddin</option>
-            <option>Riyadh Hassan</option>
-            <option>Ferdous Hassan</option>
-            <option>Arif Almas</option>
-          </select>
-        </div>
-        <div className="fieldContainer">
-          <label for="lws-projectName">Project Name</label>
-          <select id="lws-projectName" name="projectName" required>
-            <option value="" hidden selected>
-              Select Project
-            </option>
-            <option>Scoreboard</option>
-            <option>Flight Booking</option>
-            <option>Product Cart</option>
-            <option>Book Store</option>
-            <option>Blog Application</option>
-            <option>Job Finder</option>
-          </select>
-        </div>
+        <SelectAssignee teamMember={teamMember} setTeamMember={setTeamMember} />
+        <SelectProject project={project} setProject={setProject} />
 
         <div className="fieldContainer">
           <label for="lws-deadline">Deadline</label>
-          <input type="date" name="deadline" id="lws-deadline" required />
+          <input
+            type="date"
+            name="deadline"
+            id="lws-deadline"
+            onChange={handleChange}
+            value={data.deadline}
+            required
+          />
         </div>
 
         <div className="text-right">
-          <button type="submit" className="lws-submit">
+          <button type="submit" disabled={isLoading} className="lws-submit">
             Update
           </button>
+          {isError && <Error />}
         </div>
       </form>
     </div>

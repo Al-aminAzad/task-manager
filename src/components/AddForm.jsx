@@ -6,7 +6,7 @@ import SelectProject from "./SelectProject";
 
 const AddForm = () => {
   const navigate = useNavigate();
-  const [addTasks, { isSuccess, isLoading, isError }] = useAddTasksMutation();
+  const [addTasks, { isSuccess, isLoading }] = useAddTasksMutation();
   const [data, setData] = useState({
     taskName: "",
     deadline: "",

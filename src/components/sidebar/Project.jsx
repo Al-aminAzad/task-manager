@@ -11,7 +11,7 @@ const Project = ({ projects, project }) => {
     if (projects) {
       setCheckedProjects(projects);
     }
-  }, [projects, project]);
+  }, [projects]);
   const handleChange = (e) => {
     if (e.target.checked) {
       setCheckedProjects([...checkedProjects, project]);
